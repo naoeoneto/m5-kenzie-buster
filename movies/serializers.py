@@ -22,16 +22,8 @@ class MovieOrderSerializer(serializers.Serializer):
     title = serializers.CharField(source="movie.title", read_only=True)
     price = serializers.DecimalField(max_digits=8, decimal_places=2)
     buyed_by = serializers.CharField(source="user.email", read_only=True)
-    # title = serializers.SerializerMethodField()
-    # buyed_by = serializers.SerializerMethodField()
     buyed_at = serializers.DateTimeField(read_only=True)
 
     def create(self, validated_data: dict):
         return MovieOrder.objects.create(**validated_data)
-
-    # def get_title(self, obj: Movie) -> str:
-    #     return obj.title
-
-    # def get_buyed_by(self, obj: User) -> str:
-    #     return obj.email
         

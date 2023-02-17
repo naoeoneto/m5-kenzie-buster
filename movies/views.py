@@ -5,10 +5,11 @@ from movies.models import Movie
 from movies.serializers import MovieSerializer, MovieOrderSerializer
 from users.permissions import IsEmployeeOrReadOnly
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
 
 # Create your views here.
-class MovieView(APIView):
+class MovieView(APIView, PageNumberPagination):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsEmployeeOrReadOnly]
 
@@ -20,10 +21,11 @@ class MovieView(APIView):
         return Response(serializer.data, status.HTTP_201_CREATED)
 
     def get(self, request: Request) -> Response:
-        movie_list = Movie.objects.all()
-        serializer = MovieSerializer(movie_list, many=True)
+        movies = Movie.objects.all().order_by('id')
+        result_page = self.paginate_queryset (movies, request)
+        serializer = MovieSerializer(result_page, many=True)
 
-        return Response(serializer.data, status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
 
 
 class MovieDetailView(APIView):
