@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from users.models import User
 from users.serializers import UserSerializer
 from rest_framework.views import APIView, Request, Response, status
